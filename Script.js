@@ -23,7 +23,7 @@ const GOOGLE_CLIENT_ID =
     '292133242401-ag0gdtmorgahhvu75q5kdflf21ig3fk9.apps.googleusercontent.com';
 
 const GOOGLE_SHEETS_SCOPE =
-    'openid email https://www.googleapis.com/auth/spreadsheets';
+    'openid email https://www.googleapis.com/auth/drive.file';
 
 let googleTokenClient = null;
 let googleAccessToken = null;
