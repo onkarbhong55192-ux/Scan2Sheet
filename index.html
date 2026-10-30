@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan2Sheet</title>
+
+    <!-- SECTION 1: CSS STYLESHEET -->
+    <link rel="stylesheet" href="Style.css">
+</head>
+
+<body>
+
+    <!-- SECTION 2: APPLICATION HEADER -->
+    <header class="app-header">
+        <div class="logo">
+            <span class="logo-icon">S2</span>
+            <h2>Scan2Sheet</h2>
+        </div>
+    </header>
+
+
+    <main>
+    <!-- SECTION 3: HERO SECTION -->
+    <section class="hero">
+        <h1>Turn Your Document Into Data</h1>
+        <p>
+            Upload or capture a document, verify extracted fields,
+            and send clean, verified data directly to Google Sheets.
+        </p>
+    </section>
+
+    <!-- SECTION 4: IMAGE UPLOAD AND CAMERA -->
+    <section class="upload-section">
+        <button id="cameraButton" type="button">
+            Scan The Document
+        </button>
+
+        <input
+            type="file"
+            id="documentInput"
+            accept="image/*"
+            capture="environment"
+            hidden
+        >
+
+        <button id="browseButton" type="button">
+            Browse
+        </button>
+
+        <p class="upload-hint">Or drag and drop an image here</p>
+    </section>
+
+    <!-- SECTION 5: IMAGE PREVIEW -->
+    
+<!-- DOCUMENT PREVIEW AND ROTATION -->
+<section class="preview-section">
+    <h2>Document Preview</h2>
+
+    <div id="previewContainer">
+        <img
+            id="documentPreview"
+            alt="Selected Document Preview"
+            hidden
+        >
+    </div>
+
+    <!-- Rotate the document 90 degrees clockwise -->
+    <button
+        id="rotateImageButton"
+        class="rotate-image-button"
+        type="button"
+        disabled
+        title="Rotate image 90 degrees clockwise"
+        aria-label="Rotate document 90 degrees clockwise"
+    >
+        ↻ Rotate
+    </button>
+
+    <button
+        id="clearScanButton"
+        class="clear-scan-button"
+        type="button"
+        disabled
+    >
+        Clear Scan
+    </button>
+</section>
+
+    
+
+    <!-- SECTION 6: OCR EXTRACTION ACTION -->
+    <section class="extract-action">
+        <button id="extractDataButton" type="button">
+            Extract Data
+        </button>
+    </section>
+
+    <!-- SECTION 7: EXTRACTED VPC DATA TABLES -->
+    <section class="data-section">
+
+        <div class="edit-hint-banner">
+            <span class="hint-icon">✏️</span>
+            <span>
+                <strong>Review & Edit:</strong>
+                Correct the extracted values before sending them to
+                Google Sheets. Yellow fields need review.
+            </span>
+        </div>
+
+        <!-- Document information -->
+        <details class="data-group" open>
+            <summary>Document Information</summary>
+
+            <table id="extractedDataTable">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value (Editable)</th>
+                    </tr>
+                </thead>
+
+                <tbody id="extractedDataBody"></tbody>
+            </table>
+        </details>
+
+        <!-- Contractor and bank details -->
+        <details class="data-group">
+            <summary>Contractor & Bank Details</summary>
+
+            <table id="contractorDataTable">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value (Editable)</th>
+                    </tr>
+                </thead>
+
+                <tbody id="contractorDataBody"></tbody>
+            </table>
+        </details>
+
+        <!-- Work details -->
+        <details class="data-group">
+            <summary>Work Details</summary>
+
+            <table id="workDataTable">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value (Editable)</th>
+                    </tr>
+                </thead>
+
+                <tbody id="workDataBody"></tbody>
+            </table>
+        </details>
+
+        <!-- Payment summary -->
+        <details class="data-group">
+            <summary>Payment Summary</summary>
+
+            <table id="paymentSummaryTable">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Previous</th>
+                        <th>Current</th>
+                        <th>Cumulative</th>
+                    </tr>
+                </thead>
+
+                <tbody id="paymentSummaryBody"></tbody>
+            </table>
+        </details>
+
+        <!-- Recoveries -->
+        <details class="data-group">
+            <summary>Recoveries & Net Payable</summary>
+
+            <table id="recoveryDataTable">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Previous</th>
+                        <th>Current</th>
+                        <th>Cumulative</th>
+                    </tr>
+                </thead>
+
+                <tbody id="recoveryDataBody"></tbody>
+            </table>
+        </details>
+
+        <!-- Raw OCR output -->
+        <details
+            class="raw-ocr-section"
+            id="rawOcrContainer"
+            hidden
+        >
+            <summary>🔍 View Raw OCR Text</summary>
+
+            <textarea
+                id="rawOcrText"
+                readonly
+                placeholder="Raw OCR text will appear here..."
+            ></textarea>
+        </details>
+
+    </section>
+
+    <!-- SECTION 8: GOOGLE ACCOUNT CONNECTION AND EXPORT -->
+    <section class="review-section">
+
+        <h2>Review & Export</h2>
+
+        <!-- Google OAuth connection -->
+        <div class="sheet-config-card">
+
+            <div class="sheet-config-title">
+                <span class="sheet-icon">📊</span>
+                <strong>Connect your Google account</strong>
+            </div>
+
+            <p class="sheet-config-subtitle">
+                Connect your Google account to create your personal
+                Scan2Excel spreadsheet automatically.
+                Your VPC records will be saved to that spreadsheet.
+            </p>
+
+            <button
+                id="googleSignInButton"
+                class="google-signin-button"
+                type="button"
+            >
+                Connect Google Sheets
+            </button>
+
+            <!-- Google account connection status -->
+            <p
+                id="googleAccountStatus"
+                class="sheet-url-status"
+                role="status"
+                aria-live="polite"
+            >
+                Not connected
+            </p>
+
+            <!-- Spreadsheet creation and saving status -->
+            <p
+                id="sheetUrlStatus"
+                class="sheet-url-status"
+                role="status"
+                aria-live="polite"
+            ></p>
+
+            <!--
+                SECTION 8A: AUTOMATIC SPREADSHEET FIELDS
+                JavaScript fills these fields.
+                Users do not need to enter a spreadsheet URL.
+            -->
+            <input
+                type="hidden"
+                id="sheetUrlInput"
+                value=""
+            >
+
+            <input
+                type="hidden"
+                id="sheetTabInput"
+                value="Sheet1"
+            >
+
+        </div>
+
+       
+<!-- Save VPC data to Google Sheets -->
+<button id="exportSheetsButton" type="button">
+    💾 Save to Google Sheet
+</button>
+
+<!-- Open the saved spreadsheet -->
+<button id="openGoogleSheetButton" type="button">
+    📊 Open Google Sheet
+</button>
+
+<!-- Download JSON backup -->
+<button id="saveDataButton" type="button">
+    ⬇️ Download Backup (JSON)
+</button>
+
+    </section>
+
+    <!-- SECTION 9: APPLICATION STATUS -->
+    <section class="status-section">
+        <p
+            id="statusMessage"
+            role="status"
+            aria-live="polite"
+        ></p>
+    </section>
+
+    </main>
+
+    <!-- SECTION 10: JAVASCRIPT LIBRARIES -->
+
+    <!-- OCR engine -->
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@7/dist/tesseract.min.js"></script>
+
+    <!-- Google Identity Services for OAuth -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Main application JavaScript: load last -->
+    <script src="Script.js"></script>
+
+</body>
+</html>
